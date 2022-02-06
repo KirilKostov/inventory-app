@@ -1,66 +1,138 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import Colors from "../constants/colors";
-import { RegularText } from "../components/RegularText";
+import { Button } from "../components/Button";
+import { Text } from "../components/Text";
 import { TitleText } from "../components/TitleText";
+import { NewPartModal } from "../components/NewPartModal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import axios from "axios";
+import Config from "../constants/config";
 
-const data = [
-  { name: "one", barcode: 1111 },
-  { name: "two", barcode: 2222 },
-  { name: "three", barcode: 3333 },
-  { name: "four", barcode: 4444 },
-  { name: "five", barcode: 5555 },
-  { name: "six", barcode: 6666 },
-  { name: "one", barcode: 1111 },
-  { name: "two", barcode: 2222 },
-  { name: "three", barcode: 3333 },
-  { name: "four", barcode: 4444 },
-  { name: "five", barcode: 5555 },
-  { name: "six", barcode: 6666 },
-  { name: "one", barcode: 1111 },
-  { name: "two", barcode: 2222 },
-  { name: "three", barcode: 3333 },
-  { name: "four", barcode: 4444 },
-  { name: "five", barcode: 5555 },
-  { name: "six", barcode: 6666 },
-  { name: "one", barcode: 1111 },
-  { name: "two", barcode: 2222 },
-  { name: "three", barcode: 3333 },
-  { name: "four", barcode: 4444 },
-  { name: "five", barcode: 5555 },
-  { name: "six", barcode: 6666 },
-  { name: "one", barcode: 1111 },
-  { name: "two", barcode: 2222 },
-  { name: "three", barcode: 3333 },
-  { name: "four", barcode: 4444 },
-  { name: "six", barcode: 6666 },
-  { name: "one", barcode: 1111 },
-  { name: "two", barcode: 2222 },
-  { name: "three", barcode: 3333 },
-  { name: "four", barcode: 4444 },
-  { name: "five", barcode: 5555 },
-  { name: "six", barcode: 6666 },
-];
+const AUTH_HEADER = {
+  Authorization: `QB-USER-TOKEN ${Config.userToken}`,
+  "QB-Realm-Hostname": Config.hostName,
+};
 
 const Divider = () => {
   return <View style={styles.divider} />;
 };
 
-const RenderItem = ({ name, barcode }) => {
+const RenderItem = ({ name, barcode, rowId, handleDeleteRecord }) => {
   return (
-    <View style={styles.listItem}>
-      <View style={styles.columnLeft}>
-        <RegularText>{name}</RegularText>
+    <TouchableOpacity onPress={() => handleDeleteRecord({ rowId })}>
+      <View style={styles.listItem}>
+        <View style={styles.columnLeft}>
+          <Text>{name}</Text>
+        </View>
+        <View style={[styles.columnRight, styles.borderLeftGray]}>
+          <Text>{barcode}</Text>
+        </View>
       </View>
-      <View style={[styles.columnRight, styles.borderLeftGray]}>
-        <RegularText>{barcode}</RegularText>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const InventoryScreen = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [data, setData] = useState(null);
+
+  const handleAddRecord = ({ name, barcode }) => {
+    axios
+      .post(
+        `${Config.baseUrl}/records`,
+        {
+          to: Config.tableId,
+          data: [
+            {
+              7: {
+                value: name,
+              },
+              8: {
+                value: barcode,
+              },
+            },
+          ],
+        },
+        {
+          headers: {
+            ...AUTH_HEADER,
+          },
+        }
+      )
+      .then(function (response) {
+        //Alert record successfully added
+        handleFetchRecords();
+        setModalVisible(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const handleFetchRecords = () => {
+    axios
+      .post(
+        `${Config.baseUrl}/records/query`,
+        { from: Config.tableId, select: [3, 7, 8] },
+        {
+          headers: { ...AUTH_HEADER },
+        }
+      )
+      .then(function (response) {
+        setData(response.data.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .then(function () {
+        // console.log("Finally");
+      });
+  };
+
+  const handleDeleteRecord = ({ rowId }) => {
+    Alert.alert("Delete record", "Are you sure?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () =>
+          axios
+            .delete(`${Config.baseUrl}/records`, {
+              data: {
+                from: Config.tableId,
+                where: `{3.EQ.\'${rowId}\'}`,
+              },
+              headers: {
+                ...AUTH_HEADER,
+              },
+            })
+            .then(function (response) {
+              // ADD alert - succesful delete
+              console.log("DELETED", response);
+              handleFetchRecords();
+            })
+            .catch(function (error) {
+              // ADD alert - Error delete
+
+              console.log("DELETE ERROR", Object.values(error));
+            }),
+      },
+    ]);
+  };
+
+  useEffect(() => handleFetchRecords({ setData }), []);
+
   return (
     <View style={styles.screen}>
       <TitleText style={styles.title}>
@@ -69,26 +141,42 @@ const InventoryScreen = () => {
       </TitleText>
       <View style={styles.listHeader}>
         <View style={styles.columnLeft}>
-          <RegularText style={styles.listHeaderText}>name</RegularText>
+          <Text style={styles.listHeaderText}>name</Text>
         </View>
         <View style={[styles.columnRight, styles.borderLeftWhite]}>
-          <RegularText style={styles.listHeaderText}>barcode</RegularText>
+          <Text style={styles.listHeaderText}>barcode</Text>
         </View>
       </View>
       <View style={styles.listContainer}>
         <FlatList
           contentContainerStyle={styles.list}
           data={data}
-          renderItem={(itemData) => (
-            <RenderItem
-              name={itemData.item.name}
-              barcode={itemData.item.barcode}
-            />
-          )}
+          renderItem={(itemData) => {
+            return (
+              <RenderItem
+                name={itemData.item["7"].value}
+                barcode={itemData.item["8"].value}
+                rowId={itemData.item["3"].value}
+                handleDeleteRecord={handleDeleteRecord}
+              />
+            );
+          }}
           keyExtractor={(item, index) => index}
           ItemSeparatorComponent={Divider}
         />
       </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Add new part"
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
+        />
+      </View>
+      <NewPartModal
+        modalVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        handleAddRecord={handleAddRecord}
+      />
     </View>
   );
 };
@@ -115,7 +203,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.5,
-    elevation: 2,
+    elevation: 3,
     backgroundColor: Colors.gray,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
@@ -157,6 +245,13 @@ const styles = StyleSheet.create({
     height: 1,
     width: "100%",
     backgroundColor: Colors.lightGray,
+  },
+  buttonContainer: {
+    marginTop: 40,
+    width: "80%",
+  },
+  button: {
+    width: "100%",
   },
 });
 
