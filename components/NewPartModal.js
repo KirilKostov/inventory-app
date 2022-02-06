@@ -9,6 +9,22 @@ import Colors from "../constants/colors";
 export const NewPartModal = (props) => {
   const [name, setName] = useState(null);
   const [barcode, setBarcode] = useState(null);
+
+  const resetInputs = () => {
+    setName(null);
+    setBarcode(null);
+  };
+
+  const handleSave = () => {
+    props.handleAddRecord({ name, barcode });
+    resetInputs();
+  };
+
+  const handleCancel = () => {
+    props.onClose();
+    resetInputs();
+  };
+
   return (
     <Modal
       visible={props.modalVisible}
@@ -36,14 +52,14 @@ export const NewPartModal = (props) => {
             <Button
               title="Save"
               style={{ backgroundColor: Colors.green, width: "45%" }}
-              onPress={() => props.handleAddRecord({ name, barcode })}
+              onPress={handleSave}
               disabled={!name || !barcode}
             />
             <Button
               title="Cancel"
               style={{ backgroundColor: Colors.lightGray, width: "45%" }}
               textStyle={{ color: "black" }}
-              onPress={props.onClose}
+              onPress={handleCancel}
             />
           </View>
         </View>

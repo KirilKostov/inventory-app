@@ -6,6 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import Colors from "../constants/colors";
 import { Button } from "../components/Button";
@@ -15,6 +16,8 @@ import { NewPartModal } from "../components/NewPartModal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
 import Config from "../constants/config";
+import { useToast } from "react-native-toast-notifications";
+import { LottieLoader } from "lottie-loader-react-native";
 
 const AUTH_HEADER = {
   Authorization: `QB-USER-TOKEN ${Config.userToken}`,
@@ -43,6 +46,8 @@ const RenderItem = ({ name, barcode, rowId, handleDeleteRecord }) => {
 const InventoryScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [data, setData] = useState(null);
+  const [loadingData, setLoadingData] = useState(false);
+  const toast = useToast();
 
   const handleAddRecord = ({ name, barcode }) => {
     axios
@@ -68,16 +73,21 @@ const InventoryScreen = () => {
         }
       )
       .then(function (response) {
-        //Alert record successfully added
         handleFetchRecords();
         setModalVisible(false);
+        toast.show("Record added", {
+          type: "success",
+        });
       })
       .catch(function (error) {
-        console.log(error);
+        toast.show(`Failed to add record: \n${error}`, {
+          type: "warning",
+        });
       });
   };
 
   const handleFetchRecords = () => {
+    setLoadingData(true);
     axios
       .post(
         `${Config.baseUrl}/records/query`,
@@ -87,13 +97,13 @@ const InventoryScreen = () => {
         }
       )
       .then(function (response) {
-        setData(response.data.data);
+        setData(response.data.data.reverse());
+        setLoadingData(false);
       })
       .catch(function (error) {
-        console.log(error);
-      })
-      .then(function () {
-        // console.log("Finally");
+        toast.show(`Failed to load records \n${error}`, {
+          type: "warning",
+        });
       });
   };
 
@@ -118,20 +128,23 @@ const InventoryScreen = () => {
               },
             })
             .then(function (response) {
-              // ADD alert - succesful delete
-              console.log("DELETED", response);
               handleFetchRecords();
+              toast.show("Record deleted", {
+                type: "success",
+              });
             })
             .catch(function (error) {
-              // ADD alert - Error delete
-
-              console.log("DELETE ERROR", Object.values(error));
+              toast.show(`Failed to delete record \n${error}`, {
+                type: "warning",
+              });
             }),
       },
     ]);
   };
 
-  useEffect(() => handleFetchRecords({ setData }), []);
+  useEffect(() => {
+    handleFetchRecords({ setData });
+  }, []);
 
   return (
     <View style={styles.screen}>
@@ -148,22 +161,33 @@ const InventoryScreen = () => {
         </View>
       </View>
       <View style={styles.listContainer}>
-        <FlatList
-          contentContainerStyle={styles.list}
-          data={data}
-          renderItem={(itemData) => {
-            return (
-              <RenderItem
-                name={itemData.item["7"].value}
-                barcode={itemData.item["8"].value}
-                rowId={itemData.item["3"].value}
-                handleDeleteRecord={handleDeleteRecord}
-              />
-            );
-          }}
-          keyExtractor={(item, index) => index}
-          ItemSeparatorComponent={Divider}
-        />
+        {loadingData ? (
+          <View style={styles.lottieLoaderContainer}>
+            <LottieLoader
+              visible
+              source={require("../assets/animations/mechanical-gears.json")}
+              animationStyle={styles.lottieLoader}
+              speed={1}
+            />
+          </View>
+        ) : (
+          <FlatList
+            contentContainerStyle={styles.list}
+            data={data}
+            renderItem={(itemData) => {
+              return (
+                <RenderItem
+                  name={itemData.item["7"].value}
+                  barcode={itemData.item["8"].value}
+                  rowId={itemData.item["3"].value}
+                  handleDeleteRecord={handleDeleteRecord}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index}
+            ItemSeparatorComponent={Divider}
+          />
+        )}
       </View>
       <View style={styles.buttonContainer}>
         <Button
@@ -214,7 +238,7 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     width: "80%",
-    maxHeight: Dimensions.get("window").height * 0.5,
+    maxHeight: Dimensions.get("window").height * 0.52,
     shadowColor: "black",
   },
   list: {
@@ -252,6 +276,15 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
+  },
+  lottieLoaderContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  lottieLoader: {
+    width: Dimensions.get("window").width / 2,
+    height: Dimensions.get("window").width / 2,
   },
 });
 

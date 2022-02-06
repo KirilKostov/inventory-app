@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { ToastProvider } from "react-native-toast-notifications";
 import InventoryScreen from "./screens/InventoryScreen";
 import { Header } from "./components/Header";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
+import Config from "./constants/config";
 
 const loadFonts = () => {
   return Font.loadAsync({
@@ -13,22 +15,24 @@ const loadFonts = () => {
 };
 
 export default function App() {
-  const [dataLoaded, setDataLoaded] = useState(false);
-  if (!dataLoaded) {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  if (!fontsLoaded) {
     return (
       <AppLoading
         startAsync={loadFonts}
-        onFinish={() => setDataLoaded(true)}
-        onError={(err) => console.log("Data loading error: ", err)}
+        onFinish={() => setFontsLoaded(true)}
+        onError={(err) => console.log("Error loading fonts: ", err)}
       />
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Header />
-      <InventoryScreen />
-    </View>
+    <ToastProvider {...Config.toastOptions}>
+      <View style={styles.container}>
+        <Header />
+        <InventoryScreen />
+      </View>
+    </ToastProvider>
   );
 }
 
