@@ -78,7 +78,6 @@ const InventoryScreen = () => {
       )
       .then(function (response) {
         handleFetchRecords();
-        setModalVisible(false);
         toast.show("Record added", {
           type: "success",
         });
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     width: "80%",
-    maxHeight: Dimensions.get("window").height * 0.52,
+    maxHeight: Dimensions.get("window").height * 0.51,
     shadowColor: "black",
   },
   list: {

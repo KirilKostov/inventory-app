@@ -5,7 +5,7 @@ export default {
   tableId: "br5csm2hd",
   toastOptions: {
     placement: "top",
-    offsetTop: 35,
+    offsetTop: 40,
     textStyle: { fontSize: 21 },
     animationType: "slide-in",
     duration: 2000,

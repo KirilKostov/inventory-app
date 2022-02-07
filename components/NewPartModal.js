@@ -1,27 +1,36 @@
 import React, { useState } from "react";
-import { Modal, View, StyleSheet } from "react-native";
+import { Modal, View, StyleSheet, Dimensions, Platform } from "react-native";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { TitleText } from "./TitleText";
 import Colors from "../constants/colors";
+import { BarCodeScanner } from "expo-barcode-scanner";
 
 export const NewPartModal = (props) => {
   const [name, setName] = useState(null);
   const [barcode, setBarcode] = useState(null);
+  const [scanned, setScanned] = useState(false);
 
-  const resetInputs = () => {
+  const handleBarCodeScanned = ({ data }) => {
+    setScanned(true);
+    setBarcode(data);
+  };
+
+  const resetValues = () => {
     setName(null);
     setBarcode(null);
+    setScanned(false);
   };
 
   const handleSave = () => {
     props.handleAddRecord({ name, barcode });
-    resetInputs();
+    props.onClose();
+    resetValues();
   };
 
   const handleCancel = () => {
     props.onClose();
-    resetInputs();
+    resetValues();
   };
 
   return (
@@ -29,21 +38,43 @@ export const NewPartModal = (props) => {
       visible={props.modalVisible}
       animationType="slide"
       statusBarTranslucent
+      onRequestClose={props.onClose}
     >
       <View style={styles.container}>
         <View style={styles.content}>
           <TitleText style={styles.title}>{props.icon} Add new part</TitleText>
-          <Input
-            placeholder="name"
-            style={styles.input}
-            onChangeText={(name) => setName(name)}
-            autoCorrect={false}
-          />
-          <Input
-            placeholder="barcode"
-            style={styles.input}
-            onChangeText={(barcode) => setBarcode(barcode)}
-          />
+          {Platform.OS === "android" && (
+            <>
+              <View style={styles.barcodeScannerContainer}>
+                <BarCodeScanner
+                  onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                  style={styles.barcodeScanner}
+                />
+              </View>
+              {scanned && (
+                <Button
+                  title={"Scan again?"}
+                  onPress={() => setScanned(false)}
+                  style={styles.scanButton}
+                />
+              )}
+            </>
+          )}
+          <View style={styles.inputsContainer}>
+            <Input
+              placeholder="name"
+              style={styles.input}
+              onChangeText={(name) => setName(name)}
+              autoCorrect={false}
+              value={name}
+            />
+            <Input
+              placeholder="barcode"
+              style={styles.input}
+              onChangeText={(barcode) => setBarcode(barcode)}
+              value={barcode}
+            />
+          </View>
           <View style={styles.buttonContainer}>
             <Button
               title="Save"
@@ -79,6 +110,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  inputsContainer: {
+    marginTop: 20,
+    width: "100%",
+  },
   input: {
     width: "100%",
   },
@@ -87,5 +122,22 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  scanButton: {
+    backgroundColor: Colors.secondary,
+  },
+  barcodeScannerContainer: {
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    height: Dimensions.get("window").width * 0.8,
+    width: Dimensions.get("window").width * 0.8,
+    overflow: "hidden",
+    borderRadius: 10,
+    backgroundColor: Colors.gray,
+  },
+  barcodeScanner: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").width * 1.5,
   },
 });
