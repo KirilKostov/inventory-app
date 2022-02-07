@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Modal, View, StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { TitleText } from "./TitleText";
@@ -33,10 +32,7 @@ export const NewPartModal = (props) => {
     >
       <View style={styles.container}>
         <View style={styles.content}>
-          <TitleText style={styles.title}>
-            <MaterialCommunityIcons name="cog" size={24} color="black" /> Add
-            new part
-          </TitleText>
+          <TitleText style={styles.title}>{props.icon} Add new part</TitleText>
           <Input
             placeholder="name"
             style={styles.input}

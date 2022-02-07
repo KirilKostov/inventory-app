@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TitleText /> renders correctly 1`] = `
+<Text
+  style={
+    Object {
+      "fontFamily": "gibson-semibold",
+      "fontSize": 22,
+    }
+  }
+>
+  Fantastic title text
+</Text>
+`;

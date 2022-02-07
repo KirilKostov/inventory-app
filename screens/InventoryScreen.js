@@ -43,6 +43,10 @@ const RenderItem = ({ name, barcode, rowId, handleDeleteRecord }) => {
   );
 };
 
+const Icon = ({ name }) => {
+  return <MaterialCommunityIcons name={name} size={24} color="black" />;
+};
+
 const InventoryScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [data, setData] = useState(null);
@@ -149,8 +153,7 @@ const InventoryScreen = () => {
   return (
     <View style={styles.screen}>
       <TitleText style={styles.title}>
-        <MaterialCommunityIcons name="cogs" size={24} color="black" /> Parts
-        list
+        <Icon name="cogs" /> Parts list
       </TitleText>
       <View style={styles.listHeader}>
         <View style={styles.columnLeft}>
@@ -200,6 +203,7 @@ const InventoryScreen = () => {
         modalVisible={modalVisible}
         onClose={() => setModalVisible(false)}
         handleAddRecord={handleAddRecord}
+        icon={<Icon name="cog" />}
       />
     </View>
   );

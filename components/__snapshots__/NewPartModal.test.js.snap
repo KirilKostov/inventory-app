@@ -1,0 +1,197 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NewPartModal /> renders correctly 1`] = `
+<Modal
+  animationType="slide"
+  hardwareAccelerated={false}
+  statusBarTranslucent={true}
+  visible={true}
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "width": "80%",
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "alignItems": "center",
+            "fontFamily": "gibson-semibold",
+            "fontSize": 22,
+            "justifyContent": "center",
+            "marginVertical": 40,
+          }
+        }
+      >
+         Add new part
+      </Text>
+      <TextInput
+        allowFontScaling={true}
+        autoCorrect={false}
+        onChangeText={[Function]}
+        placeholder="name"
+        rejectResponderTermination={true}
+        style={
+          Object {
+            "borderColor": "#78757c",
+            "borderRadius": 4,
+            "borderWidth": 1,
+            "height": 40,
+            "marginVertical": 10,
+            "textAlign": "center",
+            "width": "100%",
+          }
+        }
+        underlineColorAndroid="transparent"
+      />
+      <TextInput
+        allowFontScaling={true}
+        onChangeText={[Function]}
+        placeholder="barcode"
+        rejectResponderTermination={true}
+        style={
+          Object {
+            "borderColor": "#78757c",
+            "borderRadius": 4,
+            "borderWidth": 1,
+            "height": 40,
+            "marginVertical": 10,
+            "textAlign": "center",
+            "width": "100%",
+          }
+        }
+        underlineColorAndroid="transparent"
+      />
+      <View
+        style={
+          Object {
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "marginVertical": 40,
+            "width": "100%",
+          }
+        }
+      >
+        <View
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Array [
+              false,
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "#0067ff",
+                "borderRadius": 4,
+                "elevation": 3,
+                "justifyContent": "center",
+                "paddingHorizontal": 32,
+                "paddingVertical": 12,
+                "shadowColor": "black",
+                "shadowOffset": Object {
+                  "height": 1,
+                  "width": 0,
+                },
+                "shadowOpacity": 0.4,
+                "shadowRadius": 2,
+              },
+              Object {
+                "backgroundColor": "#6bbd57",
+                "width": "45%",
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Object {
+                "color": "white",
+                "fontFamily": "gibson-regular",
+                "fontSize": 16,
+                "letterSpacing": 0.25,
+                "lineHeight": 21,
+              }
+            }
+          >
+            Save
+          </Text>
+        </View>
+        <View
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Array [
+              false,
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "#0067ff",
+                "borderRadius": 4,
+                "elevation": 3,
+                "justifyContent": "center",
+                "paddingHorizontal": 32,
+                "paddingVertical": 12,
+                "shadowColor": "black",
+                "shadowOffset": Object {
+                  "height": 1,
+                  "width": 0,
+                },
+                "shadowOpacity": 0.4,
+                "shadowRadius": 2,
+              },
+              Object {
+                "backgroundColor": "#e9e9e9",
+                "width": "45%",
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Object {
+                "color": "black",
+                "fontFamily": "gibson-regular",
+                "fontSize": 16,
+                "letterSpacing": 0.25,
+                "lineHeight": 21,
+              }
+            }
+          >
+            Cancel
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</Modal>
+`;
