@@ -37,43 +37,54 @@ exports[`<NewPartModal /> renders correctly 1`] = `
       >
          Add new part
       </Text>
-      <TextInput
-        allowFontScaling={true}
-        autoCorrect={false}
-        onChangeText={[Function]}
-        placeholder="name"
-        rejectResponderTermination={true}
+      <View
         style={
           Object {
-            "borderColor": "#78757c",
-            "borderRadius": 4,
-            "borderWidth": 1,
-            "height": 40,
-            "marginVertical": 10,
-            "textAlign": "center",
+            "marginTop": 20,
             "width": "100%",
           }
         }
-        underlineColorAndroid="transparent"
-      />
-      <TextInput
-        allowFontScaling={true}
-        onChangeText={[Function]}
-        placeholder="barcode"
-        rejectResponderTermination={true}
-        style={
-          Object {
-            "borderColor": "#78757c",
-            "borderRadius": 4,
-            "borderWidth": 1,
-            "height": 40,
-            "marginVertical": 10,
-            "textAlign": "center",
-            "width": "100%",
+      >
+        <TextInput
+          allowFontScaling={true}
+          autoCorrect={false}
+          onChangeText={[Function]}
+          placeholder="name"
+          rejectResponderTermination={true}
+          style={
+            Object {
+              "borderColor": "#78757c",
+              "borderRadius": 4,
+              "borderWidth": 1,
+              "height": 40,
+              "marginVertical": 10,
+              "textAlign": "center",
+              "width": "100%",
+            }
           }
-        }
-        underlineColorAndroid="transparent"
-      />
+          underlineColorAndroid="transparent"
+          value={null}
+        />
+        <TextInput
+          allowFontScaling={true}
+          onChangeText={[Function]}
+          placeholder="barcode"
+          rejectResponderTermination={true}
+          style={
+            Object {
+              "borderColor": "#78757c",
+              "borderRadius": 4,
+              "borderWidth": 1,
+              "height": 40,
+              "marginVertical": 10,
+              "textAlign": "center",
+              "width": "100%",
+            }
+          }
+          underlineColorAndroid="transparent"
+          value={null}
+        />
+      </View>
       <View
         style={
           Object {

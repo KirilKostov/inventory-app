@@ -6,9 +6,9 @@ exports[`<Header /> renders correctly 1`] = `
     Object {
       "alignItems": "center",
       "backgroundColor": "#74489d",
-      "height": 85,
+      "height": 90,
       "justifyContent": "flex-end",
-      "paddingBottom": 15,
+      "paddingBottom": 10,
       "width": "100%",
     }
   }
