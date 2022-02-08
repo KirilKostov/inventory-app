@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Modal, View, StyleSheet, Dimensions, Platform } from "react-native";
+import {
+  Modal,
+  View,
+  StyleSheet,
+  Dimensions,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { TitleText } from "./TitleText";
@@ -40,57 +49,64 @@ export const NewPartModal = (props) => {
       statusBarTranslucent
       onRequestClose={props.onClose}
     >
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <TitleText style={styles.title}>{props.icon} Add new part</TitleText>
-          {Platform.OS === "android" && (
-            <>
-              <View style={styles.barcodeScannerContainer}>
-                <BarCodeScanner
-                  onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                  style={styles.barcodeScanner}
-                />
-              </View>
-              {scanned && (
-                <Button
-                  title={"Scan again?"}
-                  onPress={() => setScanned(false)}
-                  style={styles.scanButton}
-                />
-              )}
-            </>
-          )}
-          <View style={styles.inputsContainer}>
-            <Input
-              placeholder="name"
-              style={styles.input}
-              onChangeText={(name) => setName(name)}
-              autoCorrect={false}
-              value={name}
-            />
-            <Input
-              placeholder="barcode"
-              style={styles.input}
-              onChangeText={(barcode) => setBarcode(barcode)}
-              value={barcode}
-            />
+      <KeyboardAvoidingView style={styles.container} behavior="height">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.content}>
+            <TitleText style={styles.title}>
+              {props.icon} Add new part
+            </TitleText>
+            {Platform.OS === "android" && (
+              <>
+                <View style={styles.barcodeScannerContainer}>
+                  <BarCodeScanner
+                    onBarCodeScanned={
+                      scanned ? undefined : handleBarCodeScanned
+                    }
+                    style={styles.barcodeScanner}
+                  />
+                </View>
+                {scanned && (
+                  <Button
+                    title={"Scan again?"}
+                    onPress={() => setScanned(false)}
+                    style={styles.buttonScan}
+                  />
+                )}
+              </>
+            )}
+
+            <View style={styles.inputsContainer}>
+              <Input
+                placeholder="name"
+                style={styles.input}
+                onChangeText={(name) => setName(name)}
+                autoCorrect={false}
+                value={name}
+              />
+              <Input
+                placeholder="barcode"
+                style={styles.input}
+                onChangeText={(barcode) => setBarcode(barcode)}
+                value={barcode}
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Save"
+                style={styles.buttonSave}
+                onPress={handleSave}
+                disabled={!name || !barcode}
+              />
+              <Button
+                title="Cancel"
+                style={styles.buttonCancel}
+                textStyle={{ color: "black" }}
+                onPress={handleCancel}
+              />
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Save"
-              style={{ backgroundColor: Colors.green, width: "45%" }}
-              onPress={handleSave}
-              disabled={!name || !barcode}
-            />
-            <Button
-              title="Cancel"
-              style={{ backgroundColor: Colors.lightGray, width: "45%" }}
-              textStyle={{ color: "black" }}
-              onPress={handleCancel}
-            />
-          </View>
-        </View>
-      </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -123,7 +139,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  scanButton: {
+  buttonSave: {
+    backgroundColor: Colors.green,
+    width: "45%",
+  },
+  buttonCancel: { backgroundColor: Colors.lightGray, width: "45%" },
+  buttonScan: {
     backgroundColor: Colors.secondary,
   },
   barcodeScannerContainer: {
